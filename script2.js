@@ -101,7 +101,7 @@ const gameData = {
 const createBadGuys = function(count, canvasWidth, canvasHeight) {
     for (var i = 0; i < count; i++) {
         let randomx = random(canvasWidth,defaultObjWidthHeight);
-        let randomy = random(canvasWidth,defaultObjWidthHeight);
+        let randomy = random(canvasHeight,defaultObjWidthHeight);
 	    let newBadGuy = {   
             x: randomx,
             y: randomy,
