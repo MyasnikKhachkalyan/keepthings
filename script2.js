@@ -3,8 +3,6 @@ const context2 = canvas2.getContext("2d");
 canvas2.height = 770;
 canvas2.width = 1000;
 
-
-
 const random = function(cwh,owh){
 	let position =  Math.floor(Math.random()*cwh);
 	if (position>=cwh-owh) {
@@ -15,6 +13,21 @@ const random = function(cwh,owh){
 		return position;
 	}
 }
+
+const backgraundImg = new Image();
+backgraundImg.src = "https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/N13e7awhgiljgescq/bouncing-balls-and-beach-background-summer-vacation-by-the-sea_hcmxcpk9wx_thumbnail-full09.png";
+const heroImg = new Image();
+heroImg.src = "https://ubisafe.org/images/astronaut-vector-female.png";
+const badGuysImg = new Image();
+let help = 1;
+if (help === 1) {
+    badGuysImg.src = "http://purepng.com/public/uploads/large/purepng.com-ninjashinobininjacovert-agentassassinationguerrilla-warfaresamuraiclip-art-1421526960616u3iia.png";
+}
+else if(help === -1){
+     badGuysImg.src = "https://scontent.fevn1-2.fna.fbcdn.net/v/t1.15752-9/44680877_183729249210756_3155598831278620672_n.png?_nc_cat=102&_nc_ht=scontent.fevn1-2.fna&oh=3137c9967a3218e4a7f69093ba4e448e&oe=5C45AEDB";
+}
+
+
 
 const leftKey = 37;
 const upKey = 38;
@@ -71,25 +84,24 @@ const gameData = {
         height: defaultObjWidthHeight,
         x: random(canvas2.width,defaultObjWidthHeight),
         y: random(canvas2.height, defaultObjWidthHeight),
-        xDelta: 5, 
-        yDelta: 5,
-        color: randomcolor[randomindex(randomcolor.length)], 
+        xdelta: 5, 
+        ydelta: 5,
+        image: heroImg, 
         draw: function() {
-        	context2.fillStyle = this.color;
-			context2.fillRect(this.x, this.y, this.width, this.height);
+        	context2.drawImage(this.image, this.x, this.y, this.width, this.height);
         },
         update: function() {
 				if(ukey && this.y>=5) {
-        			this.y -= this.yDelta;
+        			this.y -= this.ydelta;
   				}
   				if(dkey && this.y<=canvas2.height-this.height-5) {
-        			this.y += this.yDelta;
+        			this.y += this.ydelta;
   				}
   				if(rkey && this.x<=canvas2.width-this.width-5) {
-        			this.x += this.xDelta;
+        			this.x += this.xdelta;
   				}
   				if(lkey && this.x>=5) {
-        			this.x -= this.xDelta;
+        			this.x -= this.xdelta;
   				}
         }		
 
@@ -100,6 +112,9 @@ const gameData = {
 
 const createBadGuys = function(count, canvasWidth, canvasHeight) {
     for (var i = 0; i < count; i++) {
+        const badGuysImg = new Image();
+        badGuysImg.src = "http://purepng.com/public/uploads/large/purepng.com-ninjashinobininjacovert-agentassassinationguerrilla-warfaresamuraiclip-art-1421526960616u3iia.png";
+
         let randomx = random(canvasWidth,defaultObjWidthHeight);
         let randomy = random(canvasHeight,defaultObjWidthHeight);
 	    let newBadGuy = {   
@@ -110,38 +125,35 @@ const createBadGuys = function(count, canvasWidth, canvasHeight) {
             speed: 5,
             xdelta: 5, 
             ydelta: 5,
-            helpx: randomx,
-            helpy: randomy,
-            color: randomcolor[randomindex(randomcolor.length)], 
+            image: badGuysImg,
             draw: function() {
-        	    context2.fillStyle = this.color;
-			    context2.fillRect(this.x, this.y, this.width, this.height);
+                context2.drawImage(this.image, this.x, this.y, this.width, this.height);
             },
             update: function() {
- 			    if (this.x>=this.helpx && this.x<=canvas2.width-this.width-this.helpx && this.y===this.helpy) {
- 				   this.x += this.xdelta
+                this.x += this.xdelta;
+                this.y += this.ydelta;
+ 			    if (this.x>=canvas2.width-this.width) {
+ 				   this.xdelta *= -1;
+                    badGuysImg.src = "https://scontent.fevn1-2.fna.fbcdn.net/v/t1.15752-9/44680877_183729249210756_3155598831278620672_n.png?_nc_cat=102&_nc_ht=scontent.fevn1-2.fna&oh=3137c9967a3218e4a7f69093ba4e448e&oe=5C45AEDB";
  			    } 
- 			    if (this.x>=this.helpx && this.x<=canvas2.width-this.width-this.helpx && this.y<=canvas2.height-this.height-this.helpy) {
-                    this.x -= this.xdelta
-                } 
-                if (this.x>=canvas2.width-this.width-this.helpx && this.y >= this.helpy && this.y<=canvas2.height-this.height-this.helpy) {
-                    this.y += this.ydelta
+                if (this.x<=0){
+                    this.xdelta *= -1;
+                    badGuysImg.src = "http://purepng.com/public/uploads/large/purepng.com-ninjashinobininjacovert-agentassassinationguerrilla-warfaresamuraiclip-art-1421526960616u3iia.png";
                 }
-                if (this.x<=this.helpx && this.y >= this.helpy && this.y<=canvas2.height-this.height-this.helpy) {
-                    this.y -= this.ydelta
-                } 
+                if (this.y>=canvas2.height-this.height || this.y<=0) {
+                    this.ydelta *= -1;
+                }
             }
         }
         gameData.badGuys[gameData.badGuys.length] = newBadGuy;
     }
 };
 
-createBadGuys(4, canvas2.width, canvas2.height);
+createBadGuys(6, canvas2.width, canvas2.height);
 console.log(gameData.badGuys);
 
 const drawing = function() {
-	context2.fillStyle = 'grey';
-	context2.fillRect(0, 0, canvas2.width, canvas2.height);
+    context2.drawImage(backgraundImg, 0, 0, canvas2.width, canvas2.height);
 
 	gameData.hero.draw();
 
@@ -162,13 +174,27 @@ obj.update();
 }
 };
 
+let paddingHerorightbottom = 17;
+let paddingHerorightbottom = 22;
+
+const collisionCheker = function(){
+    for (var i = 0; i < gameData.badGuys.length; i++) {
+            if ((gameData.hero.x+gameData.hero.width-paddingHerorightbottom>=gameData.badGuys[i].x && gameData.hero.x<gameData.badGuys[i].x+gameData.badGuys[i].width-paddingHerorightbottom) && (gameData.hero.y+gameData.hero.height-paddingHerorightbottom>=gameData.badGuys[i].y && gameData.hero.y<gameData.badGuys[i].y+gameData.badGuys[i].height-paddingHerorightbottom)) {
+                console.log("yey" + i);
+                throw new Error("You Loose!");
+                alert("Unfotunatelly, YOU LOOSE!!!");
+            }
+    }
+
+}
 
 
-const loop = function () {
+const anim = function () {
 	drawing();
 	draw();
 	updating();
  	update();
-	requestAnimationFrame(loop);
+    collisionCheker();
+	requestAnimationFrame(anim);
 }
-loop();
+anim();
