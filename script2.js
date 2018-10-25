@@ -14,18 +14,16 @@ const random = function(cwh,owh){
 	}
 }
 
+function startGame(argument) {  
+
 const backgraundImg = new Image();
 backgraundImg.src = "https://d2v9y0dukr6mq2.cloudfront.net/video/thumbnail/N13e7awhgiljgescq/bouncing-balls-and-beach-background-summer-vacation-by-the-sea_hcmxcpk9wx_thumbnail-full09.png";
 const heroImg = new Image();
 heroImg.src = "https://ubisafe.org/images/astronaut-vector-female.png";
 const badGuysImg = new Image();
-let help = 1;
-if (help === 1) {
-    badGuysImg.src = "http://purepng.com/public/uploads/large/purepng.com-ninjashinobininjacovert-agentassassinationguerrilla-warfaresamuraiclip-art-1421526960616u3iia.png";
-}
-else if(help === -1){
-     badGuysImg.src = "https://scontent.fevn1-2.fna.fbcdn.net/v/t1.15752-9/44680877_183729249210756_3155598831278620672_n.png?_nc_cat=102&_nc_ht=scontent.fevn1-2.fna&oh=3137c9967a3218e4a7f69093ba4e448e&oe=5C45AEDB";
-}
+badGuysImg.src = "http://purepng.com/public/uploads/large/purepng.com-ninjashinobininjacovert-agentassassinationguerrilla-warfaresamuraiclip-art-1421526960616u3iia.png";
+const looserImg = new Image();
+looserImg.src = "https://cdn-images-1.medium.com/max/1600/0*38wJrMPHgtSM44vC.jpg";
 
 
 
@@ -91,16 +89,16 @@ const gameData = {
         	context2.drawImage(this.image, this.x, this.y, this.width, this.height);
         },
         update: function() {
-				if(ukey && this.y>=5) {
+				if(ukey && this.y>=0) {
         			this.y -= this.ydelta;
   				}
-  				if(dkey && this.y<=canvas2.height-this.height-5) {
+  				if(dkey && this.y<=canvas2.height-this.height-0) {
         			this.y += this.ydelta;
   				}
-  				if(rkey && this.x<=canvas2.width-this.width-5) {
+  				if(rkey && this.x<=canvas2.width-this.width-0) {
         			this.x += this.xdelta;
   				}
-  				if(lkey && this.x>=5) {
+  				if(lkey && this.x>=0) {
         			this.x -= this.xdelta;
   				}
         }		
@@ -111,7 +109,7 @@ const gameData = {
 
 
 const createBadGuys = function(count, canvasWidth, canvasHeight) {
-    for (var i = 0; i < count; i++) {
+    for (let i = 0; i < count; i++) {
         const badGuysImg = new Image();
         badGuysImg.src = "http://purepng.com/public/uploads/large/purepng.com-ninjashinobininjacovert-agentassassinationguerrilla-warfaresamuraiclip-art-1421526960616u3iia.png";
 
@@ -122,7 +120,6 @@ const createBadGuys = function(count, canvasWidth, canvasHeight) {
             y: randomy,
             width: defaultObjWidthHeight,
             height: defaultObjWidthHeight,
-            speed: 5,
             xdelta: 5, 
             ydelta: 5,
             image: badGuysImg,
@@ -174,27 +171,38 @@ obj.update();
 }
 };
 
-let paddingHerorightbottom = 17;
-let paddingHerorightbottom = 22;
+let paddingHeroright = 22;
+let paddingHerobottom = 20;
+let paddingHeroleft = 22;
+let paddingHerotop = 20;
 
 const collisionCheker = function(){
-    for (var i = 0; i < gameData.badGuys.length; i++) {
-            if ((gameData.hero.x+gameData.hero.width-paddingHerorightbottom>=gameData.badGuys[i].x && gameData.hero.x<gameData.badGuys[i].x+gameData.badGuys[i].width-paddingHerorightbottom) && (gameData.hero.y+gameData.hero.height-paddingHerorightbottom>=gameData.badGuys[i].y && gameData.hero.y<gameData.badGuys[i].y+gameData.badGuys[i].height-paddingHerorightbottom)) {
-                console.log("yey" + i);
-                throw new Error("You Loose!");
-                alert("Unfotunatelly, YOU LOOSE!!!");
+    for (let i = 0; i < gameData.badGuys.length; i++) {
+            if ((gameData.hero.x+gameData.hero.width-paddingHeroright>=gameData.badGuys[i].x && gameData.hero.x<=gameData.badGuys[i].x+gameData.badGuys[i].width-paddingHeroleft) && (gameData.hero.y+gameData.hero.height-paddingHerobottom>=gameData.badGuys[i].y && gameData.hero.y<=gameData.badGuys[i].y+gameData.badGuys[i].height-paddingHerotop)) {
+                lose = confirm("YOU LOOOOSE!!!!!!!!!!! Do you want to continue?");
+                return lose;
             }
     }
-
 }
 
 
-const anim = function () {
+
+const loop = function () {
+    let looser = collisionCheker();
 	drawing();
-	draw();
 	updating();
- 	update();
-    collisionCheker();
-	requestAnimationFrame(anim);
+    if (looser) {
+        startGame();
+    }
+    else if(looser===undefined){
+	requestAnimationFrame(loop);
+    }
+    else{
+        alert("LOOOOOOOOSEEEEEEEEEERRRRRRRRRR!!!");
+        context2.drawImage(looserImg, 0, 0, canvas2.width, canvas2.height);
+
+    }
 }
-anim();
+loop();
+}
+startGame();
